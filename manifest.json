@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Reddit History Analyzer",
+  "version": "1.0.0",
+  "description": "Instantly view and paginate through a user's deleted or active post and comment history directly on hover.",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.reddit.com/*"],
+      "css": ["styles.css"],
+      "js": ["content.js"]
+    }
+  ],
+  "host_permissions": [
+    "*://*.reddit.com/*",
+    "https://arctic-shift.photon-reddit.com/*"
+  ]
+}

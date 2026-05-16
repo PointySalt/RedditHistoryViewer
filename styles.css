@@ -1,0 +1,158 @@
+/* Changed ID to Class to support multiple windows */
+.reddit-history-window {
+  position: fixed;
+  width: 350px;
+  max-height: 480px;
+  background: #1a1a1b;
+  color: #d7dadc;
+  border: 1px solid #343536;
+  border-radius: 8px;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.9);
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: #272729;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  /* Make it look and feel draggable */
+  cursor: grab;
+  user-select: none; 
+}
+
+.tooltip-header:active {
+  cursor: grabbing; /* Hand closes when dragging */
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none; /* Prevents text from interfering with drag */
+}
+
+.header-title img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; /* Make avatar circular like standard Reddit */
+  object-fit: cover;
+}
+
+.header-title h3 {
+  margin: 0;
+  font-size: 14px;
+  color: white;
+}
+
+.close-tooltip {
+  background: transparent;
+  color: #818384;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.close-tooltip:hover {
+  color: #d7dadc;
+}
+
+.tooltip-tabs {
+  display: flex;
+  border-bottom: 1px solid #343536;
+}
+
+.tooltip-tabs button {
+  flex: 1;
+  background: #1a1a1b;
+  color: #818384;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.tooltip-tabs button:hover {
+  background: #272729;
+}
+
+.tooltip-tabs button.active {
+  color: #d7dadc;
+  border-bottom: 2px solid #4fbcff;
+}
+
+.history-content {
+  overflow-y: auto;
+  padding: 0;
+  flex-grow: 1;
+  max-height: 320px;
+}
+
+/* Custom Scrollbar for better UI */
+.history-content::-webkit-scrollbar {
+  width: 6px;
+}
+.history-content::-webkit-scrollbar-thumb {
+  background: #343536;
+  border-radius: 3px;
+}
+
+.loading-text, .empty-state {
+  padding: 15px;
+  text-align: center;
+  color: #818384;
+}
+
+.history-item {
+  display: block;
+  text-decoration: none;
+  border-bottom: 1px solid #343536;
+  padding: 12px 15px;
+  word-wrap: break-word;
+  transition: background 0.1s;
+}
+
+.history-item:hover {
+  background: #272729;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-item strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #4fbcff;
+  font-size: 13px;
+}
+
+.history-item p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #a8aaab;
+}
+
+.load-more {
+  background: #272729;
+  color: white;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-top: 1px solid #343536;
+}
+
+.load-more:hover {
+  background: #343536;
+}
