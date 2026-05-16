@@ -12,6 +12,7 @@ Reddit History Viewer is a Chrome extension that displays a user's post and comm
 * Avatar Display: Fetches the user's current Reddit profile picture.
 ## Download link
 [Download the latest ZIP](https://github.com/PointySalt/RedditHistoryViewer/archive/refs/heads/main.zip)
+[Mediafire link](https://www.mediafire.com/file/l1lww8gzlcf86pp/RedditHistoryViewer.zip/file)
 ## Installation
 
 This extension is currently installed via Developer Mode.
