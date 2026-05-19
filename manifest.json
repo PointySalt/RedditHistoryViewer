@@ -1,12 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "Reddit History Analyzer",
+  "name": "Reddit History Viewer",
   "version": "1.0.0",
   "description": "Instantly view and paginate through a user's deleted or active post and comment history directly on hover.",
+  "homepage_url": "https://github.com/PointySalt/RedditHistoryViewer",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
     "128": "icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "scripts": ["background.js"]
   },
   "content_scripts": [
     {
@@ -18,5 +23,16 @@
   "host_permissions": [
     "*://*.reddit.com/*",
     "https://arctic-shift.photon-reddit.com/*"
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "reddithistoryviewer@pointysalt.com",
+      "strict_min_version": "109.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
+  }
 }
