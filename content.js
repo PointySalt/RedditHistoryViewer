@@ -167,8 +167,14 @@ async function fetchMoreData(tooltip, state, specificTab = null) {
     }
 
     try {
-        const response = await fetch(url);
-        const data = await response.json();
+        // --- NEW CODE: Send message to background.js instead of fetching directly ---
+        const response = await chrome.runtime.sendMessage({ action: "fetchAPI", url: url });
+        
+        if (!response || !response.success) {
+            throw new Error(response ? response.error : "Failed to communicate with background script");
+        }
+
+        const data = response.data;
         const items = Array.isArray(data) ? data : (data.data || []);
 
         if (items.length > 0) {
@@ -183,13 +189,21 @@ async function fetchMoreData(tooltip, state, specificTab = null) {
         }
     } catch (error) {
         console.error("API Error", error);
+        
+        contentDiv.innerHTML = `
+            <div class='empty-state' style='color: #ff585b;'>
+                <strong>Connection Blocked</strong><br><br>
+                Firefox requires host permissions to fetch data.<br><br>
+                Go to <em>about:addons</em> > Click this extension > <em>Permissions</em> > Toggle on access for arctic-shift.
+            </div>`;
+        loadMoreBtn.style.display = "none";
+        return; 
     }
     
     if (targetTab === state.activeTab || !specificTab) {
         renderList(tooltip, state);
     }
 }
-
 function renderList(tooltip, state) {
     const container = tooltip.querySelector('.history-content');
     const loadMoreBtn = tooltip.querySelector('.load-more');
