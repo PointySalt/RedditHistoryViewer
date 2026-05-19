@@ -29,6 +29,8 @@ This extension is currently installed via Developer Mode.
 4. Click the "Load unpacked" button.
 5. Select the folder containing the manifest.json file.
 
+## Credits
+[Artic shift api](https://github.com/ArthurHeitmann/arctic_shift)
 ## Usage
 
 Navigate to any Reddit thread. Hover your cursor over a username for one second to open the history window. You can drag the window by its header, toggle between posts and comments, and click specific items to open the original thread.
