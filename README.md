@@ -11,7 +11,8 @@ Reddit History Viewer is a Chrome extension that displays a user's post and comm
 * Pagination: Load older interactions in increments of ten.
 * Avatar Display: Fetches the user's current Reddit profile picture.
 * <img width="556" height="695" alt="image" src="https://github.com/user-attachments/assets/061e2b2b-6ff3-45d5-b0f8-11958b8913e4" />
-  <img width="562" height="691" alt="Screenshot 2026-05-19 121626" src="https://github.com/user-attachments/assets/2ce97e54-325d-4f65-a7ce-3a6c98d5ac37" />
+  <img width="1168" height="687" alt="image" src="https://github.com/user-attachments/assets/dde2b074-dddc-4092-90ab-13499a5dc3cb" />
+
   
 
 
