@@ -10,6 +10,11 @@ Reddit History Viewer is a Chrome extension that displays a user's post and comm
 * Tabbed Navigation: Switch between Posts and Comments for the selected user.
 * Pagination: Load older interactions in increments of ten.
 * Avatar Display: Fetches the user's current Reddit profile picture.
+* <img width="556" height="695" alt="image" src="https://github.com/user-attachments/assets/061e2b2b-6ff3-45d5-b0f8-11958b8913e4" />
+  <img width="562" height="691" alt="Screenshot 2026-05-19 121626" src="https://github.com/user-attachments/assets/2ce97e54-325d-4f65-a7ce-3a6c98d5ac37" />
+  
+
+
 ## Download link
 [Download the latest ZIP](https://github.com/PointySalt/RedditHistoryViewer/archive/refs/heads/main.zip)
 [Mediafire link](https://www.mediafire.com/file/l1lww8gzlcf86pp/RedditHistoryViewer.zip/file)
