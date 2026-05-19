@@ -1,6 +1,6 @@
 # Reddit History Viewer
 
-Reddit History Viewer is a Chrome extension that displays a user's post and comment history when hovering over their username. It uses the Arctic Shift API to retrieve interaction data, bypassing Reddit's native profile visibility settings.
+Reddit History Viewer is a Chrome/firefox extension that displays a user's post and comment history when hovering over their username. It uses the Arctic Shift API to retrieve interaction data, bypassing Reddit's native profile visibility settings.
 
 ## Features
 
@@ -16,18 +16,23 @@ Reddit History Viewer is a Chrome extension that displays a user's post and comm
   
 
 
-## Download link
+## Download links
 [Download the latest ZIP](https://github.com/PointySalt/RedditHistoryViewer/archive/refs/heads/main.zip)
 [Mediafire link](https://www.mediafire.com/file/l1lww8gzlcf86pp/RedditHistoryViewer.zip/file)
+[Firefox Add-Ons](https://addons.mozilla.org/en-US/firefox/addon/reddit-history-viewer/) for firefox users
 ## Installation
 
 This extension is currently installed via Developer Mode.
 
+For chrome/brave users-
 1. Download the code as a ZIP file and extract it to a local folder.
 2. Open Google Chrome and go to chrome://extensions/
 3. Turn on "Developer mode" in the top right corner.
 4. Click the "Load unpacked" button.
 5. Select the folder containing the manifest.json file.
+
+for firefox users
+Add it from [firefox addon store](https://addons.mozilla.org/en-US/firefox/addon/reddit-history-viewer/)
 
 ## Credits
 [Artic shift api](https://github.com/ArthurHeitmann/arctic_shift)
