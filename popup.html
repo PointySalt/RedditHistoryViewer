@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            width: 200px;
+            padding: 15px;
+            font-family: Arial, sans-serif;
+            background: #1a1a1b;
+            color: #d7dadc;
+            margin: 0;
+        }
+        h3 { margin-top: 0; color: #4fbcff; font-size: 14px; text-align: center; border-bottom: 1px solid #343536; padding-bottom: 10px; }
+        .stat-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
+        .val { font-weight: bold; color: white; }
+        
+        /* Styles for the footer links */
+        .footer-link {
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid #343536;
+            text-align: center;
+        }
+        
+        /* Hide ONLY the Firefox rate link by default */
+        #firefoxRateLink {
+            display: none; 
+            border-top: none; /* Prevents double borders when both links show */
+            margin-top: 5px;
+            padding-top: 0;
+        }
+
+        .footer-link a {
+            color: #a4d68e;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+        .footer-link a:hover {
+            color: #d7dadc;
+        }
+        
+        /* Source code link color */
+        #sourceCodeLink a {
+            color: #4fbcff; 
+        }
+        #sourceCodeLink a:hover {
+            color: #d7dadc;
+        }
+    </style>
+</head>
+<body>
+    <h3>Extension Stats</h3>
+    <div class="stat-row">
+        <span>Profiles Viewed:</span>
+        <span class="val" id="profilesViewed">0</span>
+    </div>
+    <div style="margin-top: 15px; margin-bottom: 8px; font-size: 11px; color: #818384;">API DOMINANCE</div>
+    <div class="stat-row"><span>Reddit API:</span> <span class="val" id="redditCount">0%</span></div>
+    <div class="stat-row"><span>Arctic Shift:</span> <span class="val" id="arcticCount">0%</span></div>
+    <div class="stat-row"><span>PullPush:</span> <span class="val" id="pullpushCount">0%</span></div>
+
+    <div class="footer-link" id="sourceCodeLink">
+        <a href="https://github.com/PointySalt/RedditHistoryViewer" target="_blank">💻 View Source Code</a>
+    </div>
+
+    <div class="footer-link" id="firefoxRateLink">
+        <a href="https://addons.mozilla.org/en-US/firefox/addon/reddit-history-viewer/" target="_blank">⭐ Rate on Firefox Add-ons</a>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
