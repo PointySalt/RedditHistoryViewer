@@ -12,6 +12,11 @@ Reddit History Viewer is a Chrome/firefox extension that displays a user's post 
 * Avatar Display: Fetches the user's current Reddit profile picture.
 * <img width="556" height="695" alt="image" src="https://github.com/user-attachments/assets/061e2b2b-6ff3-45d5-b0f8-11958b8913e4" />
   <img width="1168" height="687" alt="image" src="https://github.com/user-attachments/assets/dde2b074-dddc-4092-90ab-13499a5dc3cb" />
+  
+
+https://github.com/user-attachments/assets/eb97aa45-7597-434b-9204-04619e317d78
+
+
 
   
 
