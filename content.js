@@ -1,6 +1,6 @@
 let hoverTimer;
 let zIndexCounter = 999999;
-const activeUsers = new Set(); // Prevent opening duplicates of the same user
+const activeUsers = new Set(); 
 
 document.addEventListener('mouseover', (e) => {
     const link = e.target.closest('a');
@@ -12,8 +12,6 @@ document.addEventListener('mouseover', (e) => {
     const match = href.match(/\/(?:u|user)\/([^\/\?]+)/);
     if (match) {
         const username = match[1];
-        
-        // Don't open a new window if this user's window is already open
         if (activeUsers.has(username)) return;
 
         clearTimeout(hoverTimer);
@@ -32,15 +30,16 @@ async function createTooltip(event, username) {
     activeUsers.add(username);
     const tooltipId = 'reddit-tooltip-' + Date.now();
 
-    // State isolated to this specific window
     const state = {
         id: tooltipId,
         username: username,
         activeTab: 'posts',
         posts: [],
         comments: [],
-        lastPostDate: null,
-        lastCommentDate: null
+        postsCursor: null,      
+        commentsCursor: null,   
+        apiUsed: null,
+        profileStatus: 'Checking...' // Default async state
     };
 
     const tooltip = document.createElement('div');
@@ -48,7 +47,6 @@ async function createTooltip(event, username) {
     tooltip.className = 'reddit-history-window';
     tooltip.style.zIndex = ++zIndexCounter;
     
-    // Set initial position
     let leftPos = event.clientX + 15;
     let topPos = event.clientY + 15;
     if (leftPos + 350 > window.innerWidth) leftPos = window.innerWidth - 360;
@@ -56,7 +54,6 @@ async function createTooltip(event, username) {
     tooltip.style.left = `${leftPos}px`;
     tooltip.style.top = `${topPos}px`;
 
-    // Window UI Structure
     tooltip.innerHTML = `
         <div class="tooltip-header" title="Click and drag to move">
             <div class="header-title">
@@ -75,16 +72,26 @@ async function createTooltip(event, username) {
 
     document.body.appendChild(tooltip);
 
-    // Fetch the actual Reddit avatar
     fetchAvatar(username, tooltipId);
 
-    // --- DRAG AND DROP LOGIC ---
+    // --- ASYNC STATUS CHECK ---
+    chrome.runtime.sendMessage({ action: "checkProfileStatus", username: username }, (res) => {
+        if (res && res.status) {
+            state.profileStatus = res.status;
+            // Update the DOM text instantly without re-rendering the whole list
+            const statusEl = tooltip.querySelector('.profile-status-text');
+            if (statusEl) {
+                statusEl.textContent = res.status;
+                statusEl.style.color = res.status === 'Public' ? '#a4d68e' : '#ff585b';
+            }
+        }
+    });
+
     const header = tooltip.querySelector('.tooltip-header');
     header.addEventListener('mousedown', (e) => {
-        // Prevent dragging if clicking the close button
         if (e.target.tagName.toLowerCase() === 'button') return;
         
-        tooltip.style.zIndex = ++zIndexCounter; // Bring to front when clicked
+        tooltip.style.zIndex = ++zIndexCounter; 
         let offsetX = e.clientX - tooltip.getBoundingClientRect().left;
         let offsetY = e.clientY - tooltip.getBoundingClientRect().top;
 
@@ -102,15 +109,13 @@ async function createTooltip(event, username) {
         document.addEventListener('mouseup', onMouseUp);
     });
 
-    // --- BRING TO FRONT ON CLICK ---
     tooltip.addEventListener('mousedown', () => {
         tooltip.style.zIndex = ++zIndexCounter;
     });
 
-    // --- EVENT LISTENERS FOR THIS WINDOW ---
     tooltip.querySelector('.close-tooltip').addEventListener('click', () => {
         tooltip.remove();
-        activeUsers.delete(username); // Allow reopening later
+        activeUsers.delete(username); 
     });
 
     const tabBtns = tooltip.querySelectorAll('.tab-btn');
@@ -125,13 +130,13 @@ async function createTooltip(event, username) {
 
     tooltip.querySelector('.load-more').addEventListener('click', () => fetchMoreData(tooltip, state));
 
-    // Initial Data Fetch
+    chrome.runtime.sendMessage({ action: "trackProfileView" });
+
     await fetchMoreData(tooltip, state, 'posts');
     await fetchMoreData(tooltip, state, 'comments');
     renderList(tooltip, state);
 }
 
-// Fetch user's actual profile avatar
 async function fetchAvatar(username, tooltipId) {
     const imgElement = document.getElementById(`avatar-${tooltipId}`);
     try {
@@ -140,12 +145,10 @@ async function fetchAvatar(username, tooltipId) {
         let avatarUrl = json.data.icon_img;
         
         if (avatarUrl) {
-            // Fix HTML encoding issues common in Reddit avatar URLs
             avatarUrl = avatarUrl.replace(/&amp;/g, '&');
             imgElement.src = avatarUrl;
         }
     } catch (e) {
-        // Silently fail and keep the default extension icon if fetch fails
         console.log("Could not fetch avatar for", username);
     }
 }
@@ -153,50 +156,44 @@ async function fetchAvatar(username, tooltipId) {
 async function fetchMoreData(tooltip, state, specificTab = null) {
     const targetTab = specificTab || state.activeTab;
     const isPosts = targetTab === 'posts';
-    const cursor = isPosts ? state.lastPostDate : state.lastCommentDate;
+    
+    const cursor = isPosts ? state.postsCursor : state.commentsCursor; 
     
     const contentDiv = tooltip.querySelector('.history-content');
     const loadMoreBtn = tooltip.querySelector('.load-more');
     
-    contentDiv.innerHTML = "<div class='loading-text'>Fetching data from Arctic Shift...</div>";
+    if (itemsCount(state, targetTab) === 0) {
+        contentDiv.innerHTML = "<div class='loading-text'>Fetching profile data...</div>";
+    }
     loadMoreBtn.style.display = "none";
 
-    let url = `https://arctic-shift.photon-reddit.com/api/${isPosts ? 'posts' : 'comments'}/search?author=${state.username}&limit=10&sort=desc`;
-    if (cursor) {
-        url += `&before=${cursor}`;
-    }
-
     try {
-        // --- NEW CODE: Send message to background.js instead of fetching directly ---
-        const response = await chrome.runtime.sendMessage({ action: "fetchAPI", url: url });
+        const response = await chrome.runtime.sendMessage({ 
+            action: "fetchUserHistory", 
+            username: state.username, 
+            type: targetTab, 
+            cursor: cursor || null
+        });
         
         if (!response || !response.success) {
-            throw new Error(response ? response.error : "Failed to communicate with background script");
+            throw new Error("Failed to communicate with background script");
         }
 
-        const data = response.data;
-        const items = Array.isArray(data) ? data : (data.data || []);
+        const newItems = response.data || [];
+        state.apiUsed = response.apiUsed;
 
-        if (items.length > 0) {
-            const lastItemTime = items[items.length - 1].created_utc;
+        if (newItems.length > 0) {
             if (isPosts) {
-                state.posts.push(...items);
-                state.lastPostDate = lastItemTime;
+                state.posts = (state.posts || []).concat(newItems);
+                state.postsCursor = response.cursors;
             } else {
-                state.comments.push(...items);
-                state.lastCommentDate = lastItemTime;
+                state.comments = (state.comments || []).concat(newItems);
+                state.commentsCursor = response.cursors;
             }
         }
     } catch (error) {
         console.error("API Error", error);
-        
-        contentDiv.innerHTML = `
-            <div class='empty-state' style='color: #ff585b;'>
-                <strong>Connection Blocked</strong><br><br>
-                Firefox requires host permissions to fetch data.<br><br>
-                Go to <em>about:addons</em> > Click this extension > <em>Permissions</em> > Toggle on access for arctic-shift.
-            </div>`;
-        loadMoreBtn.style.display = "none";
+        contentDiv.innerHTML = `<div class='empty-state' style='color: #ff585b;'>Failed to fetch data.</div>`;
         return; 
     }
     
@@ -204,16 +201,39 @@ async function fetchMoreData(tooltip, state, specificTab = null) {
         renderList(tooltip, state);
     }
 }
+
+function itemsCount(state, tab) {
+    return tab === 'posts' ? (state.posts || []).length : (state.comments || []).length;
+}
+
 function renderList(tooltip, state) {
     const container = tooltip.querySelector('.history-content');
     const loadMoreBtn = tooltip.querySelector('.load-more');
     const isPosts = state.activeTab === 'posts';
-    const items = isPosts ? state.posts : state.comments;
+    const items = isPosts ? (state.posts || []) : (state.comments || []);
 
     container.innerHTML = "";
 
+    if (state.apiUsed) {
+        const statsHeader = document.createElement('div');
+        statsHeader.style.padding = '8px 15px';
+        statsHeader.style.fontSize = '11px';
+        statsHeader.style.backgroundColor = '#272729';
+        statsHeader.style.borderBottom = '1px solid #343536';
+        statsHeader.style.color = '#a8aaab';
+        statsHeader.style.display = 'flex';
+        statsHeader.style.justifyContent = 'space-between';
+        
+        const statusColor = state.profileStatus === 'Public' ? '#a4d68e' : (state.profileStatus === 'Checking...' ? '#f6b26b' : '#ff585b');
+        statsHeader.innerHTML = `
+            <span>API: <strong>${state.apiUsed.toUpperCase()}</strong></span>
+            <span>Status: <strong class="profile-status-text" style="color: ${statusColor}">${state.profileStatus}</strong></span>
+        `;
+        container.appendChild(statsHeader);
+    }
+
     if (items.length === 0) {
-        container.innerHTML = "<p class='empty-state'>No activity found.</p>";
+        container.innerHTML += "<p class='empty-state'>No activity found.</p>";
         loadMoreBtn.style.display = "none";
         return;
     }
