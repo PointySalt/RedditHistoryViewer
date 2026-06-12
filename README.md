@@ -14,6 +14,10 @@ Reddit History Viewer is a Chrome/firefox extension that displays a user's post 
   <img width="1168" height="687" alt="image" src="https://github.com/user-attachments/assets/dde2b074-dddc-4092-90ab-13499a5dc3cb" />
   
 
+
+https://github.com/user-attachments/assets/bef543f4-4f72-4bd3-885a-5703110e3447
+
+
 https://github.com/user-attachments/assets/eb97aa45-7597-434b-9204-04619e317d78
 
 
